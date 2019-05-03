@@ -18,8 +18,8 @@ def parse_job(file_path):
             job = {}
             job["JobID"] = int(lines[1])
             job["Created"] = ts2int(lines[4].rstrip("\n"))
-            #job["Priority"] = 0 if str(lines[7].rstrip("\n")) == "Low" else 1
-            job["Priority"] = lines[7].rstrip("\n")
+            job["Priority"] = 0 if str(lines[7].rstrip("\n")) == "Low" else 1
+            #job["Priority"] = lines[7].rstrip("\n")
             job["Tasks"] = list(map(lambda s: int(s), lines[10:]))
     except:
         job = None
