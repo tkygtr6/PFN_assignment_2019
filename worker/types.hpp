@@ -25,19 +25,19 @@ class Job{
             remaining_point = tasks[task_no - 1];
         }
 
-        std::pair<bool, int> update_task(){
+        bool update_task(){
             if (remaining_point > 1){
                 remaining_point--;
             }else{
                 if(task_no == num_tasks){
                     remaining_point = 0;
-                    return std::make_pair(true, job_id);
+                    return false;
                 }else{
                     task_no++;
                     remaining_point = tasks[task_no - 1];
                 }
             }
-            return std::make_pair(false, 0);
+            return true;
         }
 };
 
