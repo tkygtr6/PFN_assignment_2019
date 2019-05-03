@@ -18,7 +18,7 @@ void update_jobs(){
     std::list<int> finish_job_ids;
     for(auto it = job_list.begin(); it != job_list.end(); ++it){
         auto res = it->update_task();
-        if(res.first){
+        if(!res){
             it = job_list.erase(it);
         }
     }
