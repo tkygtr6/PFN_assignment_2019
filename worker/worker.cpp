@@ -28,18 +28,19 @@ class Job{
             remaining_point = tasks[task_no - 1];
         }
 
-        void update(){
+        std::pair<bool, int> update_task(){
             if (remaining_point > 1){
                 remaining_point--;
             }else{
                 if(task_no == num_tasks){
                     remaining_point = 0;
-                    // remove
+                    return std::make_pair(true, job_id);
                 }else{
                     task_no++;
                     remaining_point = tasks[task_no - 1];
                 }
             }
+            return std::make_pair(false, 0);
         }
 };
 
@@ -106,9 +107,25 @@ void calc_exec_point(){
     std::cout << exec_point << std::endl;
 }
 
+void remove_job(int job_id){
+    for(auto it = job_list.begin(); it != job_list.end(); ++it){
+        if(it->job_id == job_id){
+            job_list.erase(it);
+        }
+        return;
+    }
+}
+
 void update_jobs(){
+    std::vector<int> finish_job_ids;
     for(auto& job : job_list){
-        job.update();
+        auto res = job.update_task();
+        if(res.first){
+            finish_job_ids.push_back(res.second);
+        }
+    }
+    for(auto& finish_job_id : finish_job_ids){
+        remove_job(finish_job_id);
     }
 }
 
@@ -118,8 +135,8 @@ int main(){
         for(const auto& new_job : new_jobs){
             job_list.push_back(new_job);
         }
-        calc_exec_point();
         update_jobs();
+        calc_exec_point();
     }
 
     return 0;
