@@ -4,6 +4,8 @@
 #include <list>
 #include "parser.hpp"
 
+#define MAXTIME 100
+
 std::list<Job> job_list;
 
 void calc_exec_point(){
@@ -23,13 +25,17 @@ void update_jobs(){
     }
 }
 
+void add_job_to_job_list(int t){
+    std::list<Job> new_jobs = get_and_parse_json(t);
+    for(const auto& new_job : new_jobs){
+        job_list.push_back(new_job);
+    }
+}
+
 int main(){
-    for(int i = 0; i <= 10000; i++){
+    for(int i = 0; i <= MAXTIME; i++){
         update_jobs();
-        std::list<Job> new_jobs = get_and_parse_json(i);
-        for(const auto& new_job : new_jobs){
-            job_list.push_back(new_job);
-        }
+        add_job_to_job_list(i);
         calc_exec_point();
     }
 
