@@ -6,22 +6,6 @@
 #include <curl/curl.h> 
 #include "json11/json11.hpp"
 
-std::string int2ts(int i){
-    std::ostringstream ts;
-    ts << std::setfill('0') << std::right << std::setw(2) << i / 3600;
-    ts << ":";
-    ts << std::setfill('0') << std::right << std::setw(2) << (i / 60) % 60;
-    ts << ":";
-    ts << std::setfill('0') << std::right << std::setw(2) << i % 60;
-    return ts.str();
-}
-
-size_t callbackWrite(char *ptr, size_t size, size_t nmemb, std::string *stream){
-    int dataLength = size * nmemb;
-    stream->append(ptr, dataLength);
-    return dataLength;
-}
-
 class Job{
     public:
         int created;
@@ -59,6 +43,24 @@ class Job{
         }
 };
 
+std::vector<Job> job_list;
+
+std::string int2ts(int i){
+    std::ostringstream ts;
+    ts << std::setfill('0') << std::right << std::setw(2) << i / 3600;
+    ts << ":";
+    ts << std::setfill('0') << std::right << std::setw(2) << (i / 60) % 60;
+    ts << ":";
+    ts << std::setfill('0') << std::right << std::setw(2) << i % 60;
+    return ts.str();
+}
+
+size_t callbackWrite(char *ptr, size_t size, size_t nmemb, std::string *stream){
+    int dataLength = size * nmemb;
+    stream->append(ptr, dataLength);
+    return dataLength;
+}
+
 std::vector<Job> get_and_parse_json(int sec){
     CURL *curl;
     CURLcode ret;
@@ -95,7 +97,6 @@ std::vector<Job> get_and_parse_json(int sec){
     return jobs;
 }
 
-std::vector<Job> job_list;
 
 void calc_exec_point(){
     int exec_point = 0;
