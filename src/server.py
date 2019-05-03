@@ -28,7 +28,7 @@ def parse_job(file_path):
 def read_data():
     files = os.listdir(DATA_DIR)
     for file in files:
-        if not file[-4:] == ".job":
+        if not file.endswith(".job"):
             continue
         job = parse_job(os.path.join(DATA_DIR, file))
         if job:
