@@ -16,7 +16,7 @@ size_t callbackWrite(char *ptr, size_t size, size_t nmemb, std::string *stream){
     return dataLength;
 }
 
-std::vector<Job> get_and_parse_json(int sec){
+std::list<Job> get_and_parse_json(int sec){
     CURL *curl;
     CURLcode ret;
     std::string url = "http://localhost:5000/jobs/" + int2ts(sec);
@@ -25,7 +25,7 @@ std::vector<Job> get_and_parse_json(int sec){
     curl = curl_easy_init();
     if (curl == NULL) {
         std::cerr << "curl_easy_init() failed" << std::endl;
-        std::vector<Job> jobs;
+        std::list<Job> jobs;
         return jobs;
     }
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
@@ -36,7 +36,7 @@ std::vector<Job> get_and_parse_json(int sec){
 
     if (ret != CURLE_OK) {
         std::cerr << "curl_easy_perform() failed." << std::endl;
-        std::vector<Job> jobs;
+        std::list<Job> jobs;
         return jobs;
     }
 
@@ -44,7 +44,7 @@ std::vector<Job> get_and_parse_json(int sec){
     auto jobs_json = json11::Json::parse(res, json_err); 
     jobs_json = jobs_json["Jobs"];
 
-    std::vector<Job> jobs;
+    std::list<Job> jobs;
     for(const auto& job_json : jobs_json.array_items()){
         Job job(job_json);
         jobs.push_back(job);
