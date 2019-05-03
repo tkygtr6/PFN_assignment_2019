@@ -38,15 +38,14 @@ void update_jobs(){
 
 int main(){
     for(int i = 0; i <= 10000; i++){
+        update_jobs();
         std::vector<Job> new_jobs = get_and_parse_json(i);
         for(const auto& new_job : new_jobs){
             job_list.push_back(new_job);
         }
-        update_jobs();
         calc_exec_point();
     }
 
     return 0;
 }
-
 
