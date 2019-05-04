@@ -8,7 +8,7 @@ if DATA_DIR is None:
     DATA_DIR = DEFAULT_DATA_DIR
 
 jobs = []
-jobs_created = []
+jobs_created = [] # for binray search
 
 def ts2int(ts):
     ts = ts.split(":")
