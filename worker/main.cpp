@@ -4,39 +4,68 @@
 #include <list>
 #include "parser.hpp"
 
-#define MAXTIME 100
+#define MAXTIME 20
+#define CAPACITY 10
 
-std::list<Job> job_list;
+std::list<Job> active_job_list;
+std::list<Job> inactive_job_list;
 
-void calc_exec_point(){
+int calc_exec_point(){
     int exec_point = 0;
-    for(const auto& job : job_list){
+    for(const auto& job : active_job_list){
         exec_point += job.remaining_point;
     }
-    std::cout << exec_point << std::endl;
+    return exec_point;
 }
 
-void update_jobs(){
-    for(auto it = job_list.begin(); it != job_list.end(); ++it){
-        auto res = it->update_task();
-        if(!res){
-            it = job_list.erase(it);
+void activate_jobs(int spare_point){
+    for(auto it = inactive_job_list.begin(); it != inactive_job_list.end(); ++it){
+        if(it->remaining_point <= spare_point){
+            spare_point -= it->remaining_point;
+            active_job_list.push_back(*it);
+            it = inactive_job_list.erase(it);
         }
     }
 }
 
-void add_job_to_job_list(int t){
+void update_jobs(){
+    for(auto it = active_job_list.begin(); it != active_job_list.end();){
+        auto res = it->update_task();
+        if(res == TASK_FINISHED){
+            inactive_job_list.push_back(*it);
+            it = active_job_list.erase(it);
+        }
+        else if(res == JOB_FINISHED){
+            it = active_job_list.erase(it);
+        }else{
+            ++it;
+        }
+    }
+}
+
+void add_job_to_inactive_job_list(int t){
     std::list<Job> new_jobs = get_and_parse_json(t);
     for(const auto& new_job : new_jobs){
-        job_list.push_back(new_job);
+        inactive_job_list.push_back(new_job);
+    }
+}
+
+void print_job_list(){
+    for(auto& j : active_job_list){
+        std::cout << "active" << j.remaining_point << std::endl;
+    }
+    for(auto& j : inactive_job_list){
+        std::cout << "inactive" << j.remaining_point << std::endl;
     }
 }
 
 int main(){
     for(int i = 0; i <= MAXTIME; i++){
         update_jobs();
-        add_job_to_job_list(i);
-        calc_exec_point();
+        add_job_to_inactive_job_list(i);
+        activate_jobs(CAPACITY - calc_exec_point());
+        std::cout << calc_exec_point() << std::endl;
+        //print_job_list();
     }
 
     return 0;
