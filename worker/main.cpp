@@ -12,15 +12,36 @@ int PRIORITY_RANGE;
 std::vector <std::list<Job>> active_job_lists;
 std::vector <std::list<Job>> inactive_job_lists;
 
+void update_jobs_with_no_capacity(){
+    // use for no capacity
+    for(int i = 0; i < PRIORITY_RANGE; i++){
+        for(auto it = active_job_lists[i].begin(); it != active_job_lists[i].end();){
+            auto res = it->update_task();
+            if(res == JOB_FINISHED){
+                it = active_job_lists[i].erase(it);
+            }else{
+                ++it;
+            }
+        }
+    }
+}
+
+void add_job_to_active_job_list(int t){
+    // use for no capacity
+    std::list<Job> new_jobs = get_and_parse_json(t);
+    for(const auto& new_job : new_jobs){
+        active_job_lists[new_job.priority].push_back(new_job);
+    }
+}
+
 void update_jobs(){
     for(int i = 0; i < PRIORITY_RANGE; i++){
         for(auto it = active_job_lists[i].begin(); it != active_job_lists[i].end();){
             auto res = it->update_task();
-            if(res == TASK_FINISHED){
-                inactive_job_lists[i].push_back(*it);
+            if(res == JOB_FINISHED){
                 it = active_job_lists[i].erase(it);
-            }
-            else if(res == JOB_FINISHED){
+            }else if(res == TASK_FINISHED){
+                inactive_job_lists[i].push_back(*it);
                 it = active_job_lists[i].erase(it);
             }else{
                 ++it;
@@ -66,11 +87,20 @@ void print_exec_point(int t){
 int main(){
     env_init();
 
-    for(int t = 0; t <= MAXTIME; t++){
-        update_jobs();
-        add_job_to_inactive_job_list(t);
-        activate_jobs(CAPACITY - calc_exec_point());
-        print_exec_point(t);
+    if(CAPACITY == -1){
+        // no capacity, only use active_job_list
+        for(int t = 0; t <= MAXTIME; t++){
+            update_jobs_with_no_capacity();
+            add_job_to_active_job_list(t);
+            print_exec_point(t);
+        }
+    }else{
+        for(int t = 0; t <= MAXTIME; t++){
+            update_jobs();
+            add_job_to_inactive_job_list(t);
+            activate_jobs(CAPACITY - calc_exec_point());
+            print_exec_point(t);
+        }
     }
 
     return 0;

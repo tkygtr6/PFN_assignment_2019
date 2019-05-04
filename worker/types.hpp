@@ -3,6 +3,8 @@
 #include <vector>
 #include "json11/json11.hpp"
 
+extern int PRIORITY_RANGE;
+
 enum TaskStatus{
     CONTINUE,
     TASK_FINISHED,
@@ -22,7 +24,11 @@ class Job{
         Job(json11::Json job_json){
             created = job_json["Created"].int_value();
             job_id = job_json["JobID"].int_value();
-            priority = job_json["Priority"].int_value();
+            if(PRIORITY_RANGE == 1){
+                priority = 0; // ignore priority
+            }else{
+                priority = job_json["Priority"].int_value();
+            }
             for(const auto& task : job_json["Tasks"].array_items()){
                 tasks.push_back(task.int_value());
             }
