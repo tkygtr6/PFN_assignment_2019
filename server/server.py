@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 import os
+import bisect
 
 DEFAULT_DATA_DIR="./data"
 DATA_DIR =  os.environ.get("DATA_DIR")
@@ -7,6 +8,7 @@ if DATA_DIR is None:
     DATA_DIR = DEFAULT_DATA_DIR
 
 jobs = []
+jobs_created = []
 
 def ts2int(ts):
     ts = ts.split(":")
@@ -23,7 +25,6 @@ def parse_job(file_path):
             job["JobID"] = int(lines[1])
             job["Created"] = ts2int(lines[4].rstrip("\n"))
             job["Priority"] = 0 if str(lines[7].rstrip("\n")) == "Low" else 1
-            #job["Priority"] = lines[7].rstrip("\n")
             job["Tasks"] = list(map(lambda s: int(s), lines[10:]))
     except:
         job = None
@@ -37,15 +38,16 @@ def read_data():
         job = parse_job(os.path.join(DATA_DIR, file))
         if job:
             jobs.append(job)
+            jobs_created.append(job["Created"])
     jobs.sort(key=lambda job:job["Created"])
+    jobs_created.sort()
 
 def search_job(ts):
-    # todo bin search
     created = ts2int(ts)
-    target_jobs = []
-    for job in jobs:
-        if job["Created"] == created:
-            target_jobs.append(job)
+    min_index = bisect.bisect_left(jobs_created, created)
+    max_index = bisect.bisect_right(jobs_created, created)
+    print(min_index, max_index)
+    target_jobs = jobs[min_index:max_index]
     return target_jobs
 
 app = Flask(__name__)
