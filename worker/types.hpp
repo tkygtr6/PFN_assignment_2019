@@ -3,6 +3,11 @@
 #include <vector>
 #include "json11/json11.hpp"
 
+enum TaskStatus{
+    CONTINUE,
+    JOB_FINISHED
+};
+
 class Job{
     public:
         int created;
@@ -25,19 +30,18 @@ class Job{
             remaining_point = tasks[task_no - 1];
         }
 
-        bool update_task(){
+        TaskStatus update_task(){
             if (remaining_point > 1){
                 remaining_point--;
             }else{
                 if(task_no == num_tasks){
-                    remaining_point = 0;
-                    return false;
+                    return JOB_FINISHED;
                 }else{
                     task_no++;
                     remaining_point = tasks[task_no - 1];
                 }
             }
-            return true;
+            return CONTINUE;
         }
 };
 

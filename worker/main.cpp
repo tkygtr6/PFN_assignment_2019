@@ -17,10 +17,12 @@ void calc_exec_point(){
 }
 
 void update_jobs(){
-    for(auto it = job_list.begin(); it != job_list.end(); ++it){
+    for(auto it = job_list.begin(); it != job_list.end();){
         auto res = it->update_task();
-        if(!res){
+        if(res == JOB_FINISHED){
             it = job_list.erase(it);
+        }else{
+            ++it;
         }
     }
 }
