@@ -1,7 +1,11 @@
 from flask import Flask, jsonify
 import os
 
-DATA_DIR="./data"
+DEFAULT_DATA_DIR="./data"
+DATA_DIR =  os.environ.get("DATA_DIR")
+if DATA_DIR is None:
+    DATA_DIR = DEFAULT_DATA_DIR
+
 jobs = []
 
 def ts2int(ts):
