@@ -12,28 +12,6 @@ int PRIORITY_RANGE;
 std::vector <std::list<Job>> active_job_lists;
 std::vector <std::list<Job>> inactive_job_lists;
 
-int calc_exec_point(){
-    int exec_point = 0;
-    for(int i = 0; i < PRIORITY_RANGE; i++){
-        for(const auto& job : active_job_lists[i]){
-            exec_point += job.remaining_point;
-        }
-    }
-    return exec_point;
-}
-
-void activate_jobs(int spare_point){
-    for(int i = PRIORITY_RANGE - 1; i >= 0; i--){
-        for(auto it = inactive_job_lists[i].begin(); it != inactive_job_lists[i].end(); ++it){
-            if(it->remaining_point <= spare_point){
-                spare_point -= it->remaining_point;
-                active_job_lists[i].push_back(*it);
-                it = inactive_job_lists[i].erase(it);
-            }
-        }
-    }
-}
-
 void update_jobs(){
     for(int i = 0; i < PRIORITY_RANGE; i++){
         for(auto it = active_job_lists[i].begin(); it != active_job_lists[i].end();){
@@ -58,28 +36,41 @@ void add_job_to_inactive_job_list(int t){
     }
 }
 
-void print_job_list(){
-    for(int i = 0; i < PRIORITY_RANGE; i++){
-        for(auto& j : active_job_lists[i]){
-            std::cout << "active" << i << j.remaining_point << std::endl;
+
+void activate_jobs(int spare_point){
+    for(int i = PRIORITY_RANGE - 1; i >= 0; i--){
+        for(auto it = inactive_job_lists[i].begin(); it != inactive_job_lists[i].end(); ++it){
+            if(it->remaining_point <= spare_point){
+                spare_point -= it->remaining_point;
+                active_job_lists[i].push_back(*it);
+                it = inactive_job_lists[i].erase(it);
+            }
         }
     }
+}
+
+int calc_exec_point(){
+    int exec_point = 0;
     for(int i = 0; i < PRIORITY_RANGE; i++){
-        for(auto& j : inactive_job_lists[i]){
-            std::cout << "inactive" << i << j.remaining_point << std::endl;
+        for(const auto& job : active_job_lists[i]){
+            exec_point += job.remaining_point;
         }
     }
+    return exec_point;
+}
+
+void print_exec_point(int t){
+    std::cout << t << "\t" << calc_exec_point() << std::endl;
 }
 
 int main(){
     env_init();
 
-    for(int i = 0; i <= MAXTIME; i++){
+    for(int t = 0; t <= MAXTIME; t++){
         update_jobs();
-        add_job_to_inactive_job_list(i);
+        add_job_to_inactive_job_list(t);
         activate_jobs(CAPACITY - calc_exec_point());
-        std::cout << calc_exec_point() << std::endl;
-        //print_job_list();
+        print_exec_point(t);
     }
 
     return 0;
