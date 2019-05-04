@@ -1,4 +1,4 @@
-CXX = clang++
+CXX = clang++ -g
 CXXFLAGS = -Wall -O2 -std=c++11
 LDFLAGS =
 
