@@ -46,7 +46,6 @@ def search_job(ts):
     created = ts2int(ts)
     min_index = bisect.bisect_left(jobs_created, created)
     max_index = bisect.bisect_right(jobs_created, created)
-    print(min_index, max_index)
     target_jobs = jobs[min_index:max_index]
     return target_jobs
 
