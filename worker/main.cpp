@@ -3,13 +3,14 @@
 #include <iostream> 
 #include <list>
 #include "parser.hpp"
+#include "init.hpp"
 
-#define MAXTIME 20
-#define CAPACITY 10
-#define PRIORITY_RANGE 2
+int MAXTIME;
+int CAPACITY;
+int PRIORITY_RANGE;
 
-std::list<Job> active_job_lists[PRIORITY_RANGE];
-std::list<Job> inactive_job_lists[PRIORITY_RANGE];
+std::vector <std::list<Job>> active_job_lists;
+std::vector <std::list<Job>> inactive_job_lists;
 
 int calc_exec_point(){
     int exec_point = 0;
@@ -71,6 +72,8 @@ void print_job_list(){
 }
 
 int main(){
+    env_init();
+
     for(int i = 0; i <= MAXTIME; i++){
         update_jobs();
         add_job_to_inactive_job_list(i);
