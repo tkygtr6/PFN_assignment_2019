@@ -17,4 +17,4 @@ worker: 	main.cpp parser.o json11.o init.o
 	$(CXX) $(CXXFLAGS) main.cpp parser.o json11.o init.o -o worker -lcurl $(LDFLAGS)
 
 clean:
-	rm -f *.o worker
+	rm -rf *.o worker worker.dSYM
