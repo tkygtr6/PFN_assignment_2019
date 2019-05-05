@@ -7,6 +7,7 @@
 extern int MAXTIME;
 extern int CAPACITY;
 extern int PRIORITY_RANGE;
+extern int NAIVE;
 
 extern std::vector <std::list<Job>> active_job_lists;
 extern std::vector <std::list<Job>> inactive_job_lists;
@@ -38,5 +39,13 @@ void env_init(){
 
     active_job_lists.resize(PRIORITY_RANGE);
     inactive_job_lists.resize(PRIORITY_RANGE);
+
+    NAIVE = NAIVE_DEFAULT;
+    if(const char* env_p = std::getenv("NAIVE")){
+        int i_value = atoi(env_p);
+        if (i_value){
+            NAIVE = atoi(env_p);
+        }
+    }
 }
 
