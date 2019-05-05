@@ -68,7 +68,7 @@ int find_executable_begin_time(const std::vector<int>& spare_points_list, int va
     std::vector<int> executable_points_list(spare_points_list.size());
     std::copy(spare_points_list.begin(), spare_points_list.end(), executable_points_list.begin());
 
-    for(int i = executable_points_list.size() - 1; 0 <= i; i--){
+    for(int i = executable_points_list.size() - 2; 0 <= i; i--){
         executable_points_list[i] = std::min(executable_points_list[i], executable_points_list[i + 1] + 1);
     }
 
