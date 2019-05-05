@@ -83,7 +83,6 @@ int find_executable_begin_time(const std::vector<int>& spare_points_list, int va
 }
 
 void update_spare_points_list(std::vector<int>& spare_points_list, int begin_time, int point){
-    printf("update_spare_points_list                    begin_time:%d point:%d\n", begin_time, point);
     for(int i = 0; begin_time + i < spare_points_list.size() && i < point; i++){
         spare_points_list[begin_time + i] -= point - i;
     }
@@ -106,20 +105,16 @@ void activate_jobs(){
     std::vector<int> spare_points_list(predict_size);
     update_spare_points_list_by_all_active_jobs(spare_points_list);
 
-    printf("begin             %d %d %d\n", spare_points_list[0], spare_points_list[1], spare_points_list[2]);
     for(int j = PRIORITY_RANGE - 1; 0 <= j; j--){
         for(auto it = inactive_job_lists[j].begin(); it != inactive_job_lists[j].end(); ){
-            printf("pri:%d %d\n", j, it->remaining_point);
             int begin_time = find_executable_begin_time(spare_points_list, it->remaining_point);
             if(begin_time == -1){
                 ++it;
-                printf("continue why\n");
                 continue;
             }
             update_spare_points_list(spare_points_list, begin_time, it->remaining_point);
 
             if(begin_time == 0){
-                printf("inactive_to_active %d\n", it->remaining_point);
                 active_job_lists[j].push_back(*it);
                 it = inactive_job_lists[j].erase(it);
             }else{
@@ -133,7 +128,6 @@ void activate_jobs(){
     }
 
 FIN:
-    printf("end            %d %d %d\n", spare_points_list[0], spare_points_list[1], spare_points_list[2]);
     return;
 }
 
@@ -177,7 +171,6 @@ int main(){
         }
     }else{
         for(int t = 0; t <= MAXTIME; t++){
-            printf("========================\n");
             update_active_jobs();
             add_job_to_inactive_job_lists(t);
             if (NAIVE){
