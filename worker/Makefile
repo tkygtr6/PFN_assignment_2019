@@ -13,8 +13,17 @@ parse.o:	parser.cpp
 init.o:		init.cpp
 	$(CXX) $(CXXFLAGS) -c init.cpp -o init.o $(LDFLAGS)
 
-worker: 	main.cpp parser.o json11.o init.o types.hpp
-	$(CXX) $(CXXFLAGS) main.cpp parser.o json11.o init.o -o worker -lcurl $(LDFLAGS)
+update_active_jobs.o:		update_active_jobs.cpp types.hpp
+	$(CXX) $(CXXFLAGS) -c update_active_jobs.cpp -o update_active_jobs.o $(LDFLAGS)
+
+add_new_jobs.o:		add_new_jobs.cpp types.hpp parser.cpp
+	$(CXX) $(CXXFLAGS) -c add_new_jobs.cpp -o add_new_jobs.o $(LDFLAGS)
+
+activate_jobs.o:	activate_jobs.cpp types.hpp
+	$(CXX) $(CXXFLAGS) -c activate_jobs.cpp -o activate_jobs.o $(LDFLAGS)
+
+worker: 	main.cpp parser.o json11.o init.o update_active_jobs.o add_new_jobs.o activate_jobs.o types.hpp
+	$(CXX) $(CXXFLAGS) main.cpp parser.o json11.o init.o update_active_jobs.o add_new_jobs.o activate_jobs.o -o worker -lcurl $(LDFLAGS)
 
 clean:
 	rm -rf *.o worker worker.dSYM
