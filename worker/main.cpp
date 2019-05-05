@@ -15,6 +15,18 @@ int NAIVE;
 std::vector <std::list<Job>> active_job_lists;
 std::vector <std::list<Job>> inactive_job_lists;
 
+int global_time;
+
+int calc_exec_point(){
+    int exec_point = 0;
+    for(int i = 0; i < PRIORITY_RANGE; i++){
+        for(const auto& job : active_job_lists[i]){
+            exec_point += job.remaining_point;
+        }
+    }
+    return exec_point;
+}
+
 void update_active_jobs(){
     for(int i = 0; i < PRIORITY_RANGE; i++){
         for(auto it = active_job_lists[i].begin(); it != active_job_lists[i].end();){
@@ -23,6 +35,7 @@ void update_active_jobs(){
                 it = active_job_lists[i].erase(it);
             }else if(res == TASK_FINISHED){
                 if (CAPACITY == -1){
+                    // if there exists no capacity, the next task continues to run
                     ++it;
                 }else{
                     inactive_job_lists[i].push_back(*it);
@@ -35,36 +48,22 @@ void update_active_jobs(){
     }
 }
 
-void add_job_to_inactive_job_lists(int t){
-    std::list<Job> new_jobs = get_and_parse_json(t);
+void add_new_job_to_inactive_job_lists(){
+    std::list<Job> new_jobs = get_and_parse_json(global_time);
     for(const auto& new_job : new_jobs){
         inactive_job_lists[new_job.priority].push_back(new_job);
     }
 }
 
-void add_job_to_active_job_lists(int t){
-    // use for no capacity
-    std::list<Job> new_jobs = get_and_parse_json(t);
+// use for no capacity
+void add_new_job_to_active_job_lists(){
+    std::list<Job> new_jobs = get_and_parse_json(global_time);
     for(const auto& new_job : new_jobs){
         active_job_lists[new_job.priority].push_back(new_job);
     }
 }
 
-int calc_exec_point(){
-    int exec_point = 0;
-    for(int i = 0; i < PRIORITY_RANGE; i++){
-        for(const auto& job : active_job_lists[i]){
-            exec_point += job.remaining_point;
-        }
-    }
-    return exec_point;
-}
-
-void print_exec_point(int t){
-    std::cout << t << "\t" << calc_exec_point() << std::endl;
-}
-
-int find_executable_begin_time(const std::vector<int>& spare_points_list, int value){
+int find_time_to_begin_task(const std::vector<int>& spare_points_list, int task){
     std::vector<int> executable_points_list(spare_points_list.size());
     std::copy(spare_points_list.begin(), spare_points_list.end(), executable_points_list.begin());
 
@@ -74,7 +73,7 @@ int find_executable_begin_time(const std::vector<int>& spare_points_list, int va
 
     int begin_time = -1;
     for(int i = 0; i < executable_points_list.size(); i++){
-        if(value <= executable_points_list[i]){
+        if(task <= executable_points_list[i]){
             begin_time = i;
             break;
         }
@@ -100,6 +99,7 @@ void update_spare_points_list_by_all_active_jobs(std::vector<int>& spare_points_
     }
 }
 
+
 void activate_jobs(){
     int predict_size = CAPACITY + 1;
     std::vector<int> spare_points_list(predict_size);
@@ -107,7 +107,7 @@ void activate_jobs(){
 
     for(int j = PRIORITY_RANGE - 1; 0 <= j; j--){
         for(auto it = inactive_job_lists[j].begin(); it != inactive_job_lists[j].end(); ){
-            int begin_time = find_executable_begin_time(spare_points_list, it->remaining_point);
+            int begin_time = find_time_to_begin_task(spare_points_list, it->remaining_point);
             if(begin_time == -1){
                 ++it;
                 continue;
@@ -131,6 +131,7 @@ FIN:
     return;
 }
 
+// This is NAIVE implementation of activate_jobs. Tasks are not executed when any higher priority tasks exists.
 void activate_jobs_naively(){
     int spare_point = CAPACITY - calc_exec_point();
     for(int j = PRIORITY_RANGE - 1; j >= 0; j--){
@@ -148,38 +149,30 @@ void activate_jobs_naively(){
     return;
 }
 
-void print_job_list(){
-    for(int i = 0; i < PRIORITY_RANGE; i++){
-        for(auto& j : active_job_lists[i]){
-            std::cout << "active" << j.remaining_point << std::endl;
-        }
-        for(auto& j : inactive_job_lists[i]){
-            std::cout << "inactive" << j.remaining_point << std::endl;
-        }
-    }
+void print_exec_point(){
+    std::cout << global_time << "\t" << calc_exec_point() << std::endl;
 }
 
 int main(){
     env_init();
 
     if(CAPACITY == -1){
-        // no capacity, only use active_job_list
-        for(int t = 0; t <= MAXTIME; t++){
+    // In no capacity situation, inactive_job_lists is not used. Only active_job_lists is used.
+        for(global_time = 0; global_time <= MAXTIME; global_time++){
             update_active_jobs();
-            add_job_to_active_job_lists(t);
-            print_exec_point(t);
+            add_new_job_to_active_job_lists();
+            print_exec_point();
         }
     }else{
-        for(int t = 0; t <= MAXTIME; t++){
+        for(global_time = 0; global_time <= MAXTIME; global_time++){
             update_active_jobs();
-            add_job_to_inactive_job_lists(t);
+            add_new_job_to_inactive_job_lists();
             if (NAIVE){
                 activate_jobs_naively();
             }else{
                 activate_jobs();
             }
-            print_exec_point(t);
-            //print_job_list();
+            print_exec_point();
         }
     }
 

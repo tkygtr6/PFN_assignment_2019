@@ -13,7 +13,7 @@ parse.o:	parser.cpp
 init.o:		init.cpp
 	$(CXX) $(CXXFLAGS) -c init.cpp -o init.o $(LDFLAGS)
 
-worker: 	main.cpp parser.o json11.o init.o
+worker: 	main.cpp parser.o json11.o init.o types.hpp
 	$(CXX) $(CXXFLAGS) main.cpp parser.o json11.o init.o -o worker -lcurl $(LDFLAGS)
 
 clean:

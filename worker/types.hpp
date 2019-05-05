@@ -1,9 +1,11 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <numeric>
 #include "json11/json11.hpp"
 
 extern int PRIORITY_RANGE;
+extern int global_time;
 
 enum TaskStatus{
     CONTINUE,
@@ -33,7 +35,7 @@ class Job{
                 tasks.push_back(task.int_value());
             }
             num_tasks = tasks.size();
-            task_no = 1; // begin from 1
+            task_no = 1; // ATTENTION: task_no begins from 1 not from 0
             remaining_point = tasks[task_no - 1];
         }
 
@@ -42,6 +44,7 @@ class Job{
                 remaining_point--;
             }else{
                 if(task_no == num_tasks){
+                    std::cerr << priority << " " << global_time - created - std::accumulate(tasks.begin(), tasks.end(), 0) << std::endl;
                     return JOB_FINISHED;
                 }else{
                     task_no++;
