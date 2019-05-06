@@ -1,0 +1,39 @@
+\documentclass[uplatex, a4]{jsarticle}
+%\documentclass[twocolumn,uplatex,a4paper]{jsarticle}
+\renewcommand{\figurename}{Figure}
+\usepackage[top=20truemm,bottom=20truemm,left=25truemm,right=25truemm]{geometry}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{wrapf}
+\usepackage{ascmac}
+\usepackage{listings}
+\usepackage{url}
+\usepackage[dvipdfmx]{xcolor}
+\usepackage{here}
+
+\usepackage{tgtermes}
+\usepackage[T1]{fontenc}
+\usepackage[dvipdfmx]{hyperref}
+\pagestyle{empty}
+
+% Color
+\definecolor{Blue}{HTML}{2d5ae0}
+\definecolor{Orange}{HTML}{e33900}
+\lstset{
+    language=C++,
+    basicstyle={\ttfamily\footnotesize}, %書体の指定
+    frame=tRBl, %フレームの指定
+    keywordstyle=,
+    commentstyle=,
+    framesep=5pt, %フレームと中身（コード）の間隔
+    breaklines=false, %行が長くなった場合の改行
+    linewidth=16.5cm, %フレームの横幅
+    lineskip=-0.5ex, %行間の調整
+    tabsize=4, %Tabを何文字幅にするかの指定
+    numbers=left,
+}
+
+\hypersetup{
+    colorlinks=true,
+    urlcolor=blue,
+}
+
