@@ -32,7 +32,6 @@ DATA_DIR=../test/data_test2 FLASK_APP=server.py flask run 1>/dev/null 2>/dev/nul
 sleep 2
 
 cd ../worker
-make
 
 for i in `seq $COUNT`
 do
@@ -58,7 +57,6 @@ DATA_DIR=../test/data_test3 FLASK_APP=server.py flask run 1>/dev/null 2>/dev/nul
 sleep 2
 
 cd ../worker
-make
 
 for i in `seq $COUNT`
 do

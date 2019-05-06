@@ -3,12 +3,12 @@
 ### QuickStart
 
 ```
-cd server
-DATA_DIR=../test/data_test1 FLASK_APP=server.py flask run &
+$ cd server
+$ DATA_DIR=../test/data_test1 FLASK_APP=server.py flask run &
 
-cd ../worker
-make
-MAXTIME=20 CAPACITY=10 PRIORITY_RANGE=2 ./worker
+$ cd ../worker
+$ make
+$ MAXTIME=20 CAPACITY=10 PRIORITY_RANGE=2 ./worker
 ```
 
 ### Requirement
