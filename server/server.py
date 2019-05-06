@@ -7,6 +7,11 @@ DATA_DIR =  os.environ.get("DATA_DIR")
 if DATA_DIR is None:
     DATA_DIR = DEFAULT_DATA_DIR
 
+NUM_PRIORITY_DEFAULT = 0
+NUM_PRIORITY =  os.environ.get("NUM_PRIORITY")
+if NUM_PRIORITY is None:
+    NUM_PRIORITY = NUM_PRIORITY_DEFAULT
+
 jobs = []
 jobs_created = [] # for binray search
 
@@ -24,7 +29,10 @@ def parse_job(file_path):
             job = {}
             job["JobID"] = int(lines[1])
             job["Created"] = ts2int(lines[4].rstrip("\n"))
-            job["Priority"] = 0 if str(lines[7].rstrip("\n")) == "Low" else 1
+            if NUM_PRIORITY:
+                job["Priority"] = int(lines[7])
+            else:
+                job["Priority"] = 0 if str(lines[7].rstrip("\n")) == "Low" else 1
             job["Tasks"] = list(map(lambda s: int(s), lines[10:]))
     except:
         job = None
