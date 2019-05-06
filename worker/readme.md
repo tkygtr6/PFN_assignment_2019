@@ -1,8 +1,8 @@
 ## Worker
 
 ```
-make
-MAXTIME=20 CAPACITY=15 PRIORITY_RANGE=2 NAIVE=0 ./worker
+$ make
+$ MAXTIME=20 CAPACITY=15 PRIORITY_RANGE=2 NAIVE=0 ./worker
 ```
 
 ### Output
