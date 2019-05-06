@@ -11,5 +11,5 @@ $ curl http://localhost:5000/jobs/00:00:03
 
 ```
 $ DATA_DIR=./data FLASK_APP=server.py flask run &
-python test.py
+$ pthon test.py
 ```
