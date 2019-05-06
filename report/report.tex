@@ -24,7 +24,7 @@
 環境変数DATA\_DIRでジョブの存在するディレクトリを指定することができる. 
 Created (作成日時)はタイムスタンプではなく秒に直したものを, 
 Priority (優先度) については, Highの場合は1を, Lowの場合は0を返すような仕様とした. 
-また, 同じ時刻に対して複数のジョブを返すことが可能となっている. 
+また, 同じ時刻に対して複数のジョブを返すことが可能である.
 
 \begin{lstlisting}[]
 $ cd server
@@ -74,7 +74,7 @@ $ ./test_run.sh
 \clearpage
 \section*{問題2.1 (キャパシティの追加)}
 
-実行していないジョブと実行されているジョブをそれぞれ別のリストで管理し、実行時に移動させるような設計にしている.
+実行していないジョブと実行されているジョブをそれぞれ別のリストで管理し、実行時に移動させるような設計となっている.
 
 \begin{lstlisting}[]
 $ cd server
@@ -157,7 +157,7 @@ $ MAXTIME=4000 CAPACITY=15 PRIORITY_RANGE=2 ./worker 1>../plot/log4 2>../plot/wa
   \begin{minipage}[b]{0.40\hsize}
       \centering
       \includegraphics[width=8cm]{imgs/wait2_2.pdf}
-      \caption{Count of waiting time in naive implementation (2-2)}
+      \caption{Count of waiting time in the naive implementation (2-2)}
       \label{fig:wait2_2}
   \end{minipage}
   \begin{minipage}{0.1\hsize}
@@ -166,7 +166,7 @@ $ MAXTIME=4000 CAPACITY=15 PRIORITY_RANGE=2 ./worker 1>../plot/log4 2>../plot/wa
   \begin{minipage}[b]{0.40\hsize}
       \centering
       \includegraphics[width=8cm]{imgs/wait2_3.pdf}
-      \caption{Count of waiting time in efficient implementation (2-3)}
+      \caption{Count of waiting time in the efficient implementation (2-3)}
       \label{fig:wait2_3}
   \end{minipage}
 \end{figure}
@@ -182,6 +182,10 @@ $ make
 $ MAXTIME=4000 CAPACITY=15 PRIORITY_RANGE=101 ./worker 1>../plot/log3_1 2>../plot/wait3_1
 \end{lstlisting}
 
+問題2-3のアルゴリズムに関しては, 優先度の個数が増えた場合でも同様に適用することができる.
+問題2-1から問題2-2の拡張と同じように, 優先度の個数だけジョブを管理するリストを用意すれば, それがそのまま問題3-1の実装となる.
+待ち時間の全平均は0.819である.
+
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{imgs/log3_1.pdf}
@@ -189,7 +193,12 @@ $ MAXTIME=4000 CAPACITY=15 PRIORITY_RANGE=101 ./worker 1>../plot/log3_1 2>../plo
   \label{fig:log3-1}
 \end{figure}
 
-問題2-3のアルゴリズムに関しては, 優先度の個数が増えた場合でも同様に適用することができる.
-問題2-1から問題2-2の拡張と同じように, 優先度の個数だけジョブを管理するリストを用意すれば, それがそのまま問題3-3の実装となる.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=8cm]{imgs/wait3_1.pdf}
+  \caption{Count of waiting time in 0-100 priorities (3-1)}
+  \label{fig:wait3-1}
+\end{figure}
 
 \end{document}
